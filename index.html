@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خارطة الطريق التفاعلية - استراتيجية بيكوكا</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: auto;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+            to { text-shadow: 0 0 20px rgba(255,255,255,0.5); }
+        }
+
+        .roadmap-container {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 40px;
+            min-height: 800px;
+        }
+
+        .roadmap {
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .roadmap::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .roadmap-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .roadmap-title {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .roadmap-subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .budget-badge {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E8E);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.9em;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 50%;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #FFD700, #FF6B6B, #4ECDC4, #45B7D1);
+            border-radius: 2px;
+            transform: translateX(50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin: 40px 0;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .timeline-item:nth-child(odd) {
+            text-align: left;
+            margin-right: 55%;
+        }
+
+        .timeline-item:nth-child(even) {
+            text-align: right;
+            margin-left: 55%;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .timeline-content {
+            background: rgba(255,255,255,0.15);
+            padding: 20px;
+            border-radius: 15px;
+            position: relative;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.25);
+        }
+
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            background: #FFD700;
+            border-radius: 50%;
+            transform: translateY(-50%);
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(255,215,0,0.5);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content::before {
+            left: -35px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::before {
+            right: -35px;
+        }
+
+        .phase-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+
+        .phase-duration {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 10px;
+            background: rgba(255,255,255,0.1);
+            padding: 5px 10px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .phase-description {
+            font-size: 0.95em;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .metrics {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .metric-item {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .metric-item:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+
+        .comparison-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .comparison-title {
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            color: #4ECDC4;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .comparison-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .card-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #FFD700;
+            text-align: center;
+        }
+
+        .card-content {
+            line-height: 1.6;
+        }
+
+        .highlight {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .risk-warning {
+            background: rgba(255,107,107,0.2);
+            border: 1px solid rgba(255,107,107,0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .success-indicator {
+            background: rgba(78,205,196,0.2);
+            border: 1px solid rgba(78,205,196,0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .roadmap-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .timeline-item:nth-child(odd),
+            .timeline-item:nth-child(even) {
+                margin-left: 0;
+                margin-right: 0;
+                text-align: center;
+            }
+            
+            .timeline-item:nth-child(odd) .timeline-content::before,
+            .timeline-item:nth-child(even) .timeline-content::before {
+                left: 50%;
+                right: auto;
+                transform: translate(-50%, -50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 خارطة الطريق التفاعلية - استراتيجية بيكوكا</h1>
+        
+        <div class="roadmap-container">
+            <!-- الخارطة الأولى -->
+            <div class="roadmap">
+                <div class="roadmap-header">
+                    <h2 class="roadmap-title">📈 الخارطة الأولى</h2>
+                    <p class="roadmap-subtitle">تحسين الحسابات الحالية - استراتيجية التزويد المدفوع</p>
+                    <div class="budget-badge">💰 5,300 - 9,000 ريال شهرياً</div>
+                </div>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="phase-title">🎯 المرحلة الأولى</div>
+                            <div class="phase-duration">الأسبوع 1 - التحضير والإعداد</div>
+                            <div class="phase-description">
+                                تحليل الوضع الحالي واختيار مقدمي الخدمات المناسبين
+                            </div>
+                            <div class="metrics">
+                                <div class="metric-item">تحليل المتابعين</div>
+                                <div class="metric-item">قياس التفاعل</div>
+                                <div class="metric-item">اختبار المقدمين</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="phase-title">🚀 المرحلة الثانية</div>
+                            <div class="phase-duration">الأسابيع 2-4 - التطبيق التدريجي</div>
+                            <div class="phase-description">
+                                بدء تزويد المتابعين والتفاعل بشكل متدرج ومدروس
+                            </div>
+                            <div class="metrics">
+                                <div class="metric-item">+5,000 متابع/أسبوع</div>
+                                <div class="metric-item">200-500 إعجاب</div>
+                                <div class="metric-item">20-50 تعليق</div>
+                            </div>
+                            <div class="success-indicator">
+                                <strong>النتائج المتوقعة:</strong> زيادة الوصول 300-500%
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="phase-title">📊 المرحلة الثالثة</div>
+                            <div class="phase-duration">الأسابيع 5-8 - التحسين والمراقبة</div>
+                            <div class="phase-description">
+                                مراقبة النتائج وتحسين الاستراتيجية حسب الأداء
+                            </div>
+                            <div class="metrics">
+                                <div class="metric-item">معدل تفاعل 8-12%</div>
+                                <div class="metric-item">100K-200K مشاهدة</div>
+                                <div class="metric-item">ROI 400-600%</div>
+                            </div>
+                            <div class="risk-warning">
+                                <strong>⚠️ تحذير:</strong> مراقبة مستمرة لتجنب الكشف
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- الخارطة الثانية -->
+            <div class="roadmap">
+                <div class="roadmap-header">
+                    <h2 class="roadmap-title">🧪 الخارطة الثانية</h2>
+                    <p class="roadmap-subtitle">الحسابات التجريبية - الاختبار العضوي</p>
+                    <div class="budget-badge">💰 4,000 - 6,300 ريال شهرياً</div>
+                </div>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="phase-title">🛠️ المرحلة الأولى</div>
+                            <div class="phase-duration">الأسبوع 1 - الإعداد والتجهيز</div>
+                            <div class="phase-description">
+                                إنشاء حسابات جديدة وتحضير المحتوى المُعاد تصميمه
+                            </div>
+                            <div class="metrics">
+                                <div class="metric-item">حسابات جديدة</div>
+                                <div class="metric-item">هويات مختلفة</div>
+                                <div class="metric-item">محتوى مُعاد تصميمه</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="phase-title">📱 المرحلة الثانية</div>
+                            <div class="phase-duration">الأسابيع 2-8 - النشر والاختبار</div>
+                            <div class="phase-description">
+                                تطبيق خطة المحتوى واختبار التفاعل الطبيعي
+                            </div>
+                            <div class="metrics">
+                                <div class="metric-item">نمو طبيعي 1K-3K</div>
+                                <div class="metric-item">تفاعل 3-6%</div>
+                                <div class="metric-item">بدون تزويد</div>
+                            </div>
+                            <div class="success-indicator">
+                                <strong>الهدف:</strong> قياس الأداء الطبيعي الحقيقي
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="phase-title">🔍 المرحلة الثالثة</div>
+                            <div class="phase-duration">الأسابيع 9-12 - التحليل والمقارنة</div>
+                            <div class="phase-description">
+                                تحليل البيانات والمقارنة مع الحسابات الأصلية
+                            </div>
+                            <div class="metrics">
+                                <div class="metric-item">تحليل مقارن</div>
+                                <div class="metric-item">كشف Shadow Ban</div>
+                                <div class="metric-item">تقييم المحتوى</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="comparison-section">
+            <h2 class="comparison-title">⚖️ المقارنة والتحليل</h2>
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <div class="card-title">النمو والوصول</div>
+                    <div class="card-content">
+                        <p><span class="highlight">الخارطة الأولى:</span> نمو سريع 15K-25K متابع شهرياً</p>
+                        <p><span class="highlight">الخارطة الثانية:</span> نمو طبيعي 1K-3K متابع شهرياً</p>
+                        <p><strong>الفائدة:</strong> قياس الفرق بين النمو المدفوع والطبيعي</p>
+                    </div>
+                </div>
+                
+                <div class="comparison-card">
+                    <div class="card-title">التفاعل والجودة</div>
+                    <div class="card-content">
+                        <p><span class="highlight">الخارطة الأولى:</span> تفاعل مُحسّن 8-12%</p>
+                        <p><span class="highlight">الخارطة الثانية:</span> تفاعل طبيعي 3-6%</p>
+                        <p><strong>الفائدة:</strong> تقييم جودة التفاعل الحقيقي</p>
+                    </div>
+                </div>
+                
+                <div class="comparison-card">
+                    <div class="card-title">الاستثمار والعائد</div>
+                    <div class="card-content">
+                        <p><span class="highlight">الخارطة الأولى:</span> استثمار أكبر - عائد أسرع</p>
+                        <p><span class="highlight">الخارطة الثانية:</span> استثمار أقل - بيانات أدق</p>
+                        <p><strong>الفائدة:</strong> تحديد أفضل استراتيجية للاستثمار</p>
+                    </div>
+                </div>
+                
+                <div class="comparison-card">
+                    <div class="card-title">المخاطر والتحديات</div>
+                    <div class="card-content">
+                        <p><span class="highlight">الخارطة الأولى:</span> مخاطر اكتشاف المنصات</p>
+                        <p><span class="highlight">الخارطة الثانية:</span> بطء النتائج لكن أمان أكبر</p>
+                        <p><strong>الفائدة:</strong> تحديد وجود shadow ban</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // إضافة تأثيرات تفاعلية
+        document.addEventListener('DOMContentLoaded', function() {
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            
+            // تأثير الظهور التدريجي
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+            
+            timelineItems.forEach(item => {
+                observer.observe(item);
+            });
+            
+            // تأثير النقر على العناصر
+            document.querySelectorAll('.timeline-content').forEach(content => {
+                content.addEventListener('click', function() {
+                    this.style.background = 'rgba(255,255,255,0.3)';
+                    setTimeout(() => {
+                        this.style.background = 'rgba(255,255,255,0.15)';
+                    }, 200);
+                });
+            });
+            
+            // تأثير تغيير الألوان التدريجي
+            const roadmaps = document.querySelectorAll('.roadmap');
+            roadmaps.forEach((roadmap, index) => {
+                roadmap.style.setProperty('--delay', `${index * 0.5}s`);
+            });
+        });
+    </script>
+</body>
+</html>
