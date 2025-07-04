@@ -184,11 +184,11 @@
         }
 
         .timeline-item:nth-child(odd) .timeline-content::before {
-            left: -35px;
+            right: -35px;
         }
 
         .timeline-item:nth-child(even) .timeline-content::before {
-            right: -35px;
+            left: -35px;
         }
 
         .phase-title {
@@ -330,18 +330,25 @@
                 gap: 20px;
             }
             
+            .timeline::before {
+                right: 20px;
+                left: auto;
+                transform: none;
+            }
+            
             .timeline-item:nth-child(odd),
             .timeline-item:nth-child(even) {
                 margin-left: 0;
                 margin-right: 0;
-                text-align: center;
+                text-align: right;
+                padding-right: 50px;
             }
             
             .timeline-item:nth-child(odd) .timeline-content::before,
             .timeline-item:nth-child(even) .timeline-content::before {
-                left: 50%;
-                right: auto;
-                transform: translate(-50%, -50%);
+                right: -35px;
+                left: auto;
+                transform: translateY(-50%);
             }
         }
     </style>
